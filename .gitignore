@@ -1,0 +1,15 @@
+# Maven
+target/
+
+# Eclipse / STS
+.classpath
+.project
+.factorypath
+.settings/
+
+# VS Code
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
