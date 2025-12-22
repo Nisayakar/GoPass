@@ -17,7 +17,6 @@ public class KullaniciServiceImpl implements KullaniciService {
         this.repository = repository;
     }
 
-    // CRUD
     @Override
     public Kullanici save(Kullanici k) {
         return repository.save(k);
@@ -43,7 +42,7 @@ public class KullaniciServiceImpl implements KullaniciService {
         return repository.findAll();
     }
 
-    // LOGIN
+    
     @Override
     public Optional<Kullanici> login(String eposta, String parola) {
         return repository.findByEposta(eposta)

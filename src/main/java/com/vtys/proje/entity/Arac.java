@@ -1,9 +1,10 @@
 package com.vtys.proje.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import jakarta.persistence.*;
 import lombok.*;
+import java.util.List;
 
 @Entity
 @Table(name = "arac")
@@ -11,7 +12,6 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Arac {
 
@@ -20,9 +20,9 @@ public class Arac {
     @Column(name = "arac_id")
     private Integer aracId;
 
-    // Firma_ID (FK)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "firma_id")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "seferler"})
     private Firma firma;
 
     @Column(name = "arac_tipi", length = 100)
@@ -37,8 +37,16 @@ public class Arac {
     @Column(name = "koltuk_duzeni", length = 100)
     private String koltukDuzeni;
 
-    // Ulasim_Turu_ID (FK)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ulasim_turu_id")
     private UlasimTuru ulasimTuru;
+
+    // --- EKLENEN KISIM ---
+    @OneToMany(mappedBy = "arac")
+    @JsonIgnore
+    private List<RotaPlan> seferler;
+    
+    @OneToMany(mappedBy = "arac")
+    @JsonIgnore
+    private List<Koltuk> koltuklar;
 }

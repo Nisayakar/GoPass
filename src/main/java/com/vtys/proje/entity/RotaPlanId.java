@@ -9,7 +9,7 @@ import java.io.Serializable;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode // --- BU ANOTASYONU KESİNLİKLE EKLE ---
+@EqualsAndHashCode 
 public class RotaPlanId implements Serializable {
 
     @Column(name = "rota_id")

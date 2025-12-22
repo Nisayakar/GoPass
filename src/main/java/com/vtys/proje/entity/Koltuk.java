@@ -21,14 +21,14 @@ public class Koltuk {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "arac_id")
-    @JsonIgnore // Koltuk bilgisini çekerken tüm otobüsü getirme
+    @JsonIgnore 
     private Arac arac;
 
     @Column(name = "koltuk_turu", length = 50)
-    private String koltukTuru; // Cam Kenarı, Koridor vb.
+    private String koltukTuru;
 
     @Column(name = "durum", length = 50)
-    private String durum; // Boş, Dolu, Rezerve
+    private String durum; 
 
     @Column(name = "koltuk_no", length = 20)
     private String koltukNo;

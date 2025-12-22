@@ -604,3 +604,337 @@
 }
 
 
+/* ============ SEARCH BOX (YENİLENDİ) ============ */
+.search-box {
+    max-width: 950px;
+    margin: 0 auto;
+    
+    /* Modern Glass Box */
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    border: var(--glass-border);
+    border-radius: 20px;
+    padding: 25px 30px; /* İç boşluğu biraz artırdık */
+    
+    /* DİKEY HİZALAMA: Üstte tablar, altta inputlar olsun diye */
+    display: flex;
+    flex-direction: column; 
+    gap: 20px; /* Üst ve alt katman arası boşluk */
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+}
+
+/* ============ YENİ ARAÇ TABLARI (ÜST KISIM) ============ */
+.vehicle-tabs {
+    display: flex;
+    justify-content: center; /* Ortala */
+    gap: 30px; /* Seçenekler arası boşluk */
+    padding-bottom: 15px;
+    border-bottom: 1px solid rgba(255,255,255,0.1); /* İnce bir çizgi ile ayır */
+    width: 100%;
+}
+
+.tab-label {
+    cursor: pointer;
+    color: var(--text-dim);
+    font-size: 1rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 15px;
+    border-radius: 20px; /* Buton gibi yuvarlak hatlar */
+}
+
+/* Radio input'u gizle, sadece görsel kalsın */
+.tab-label input { 
+    display: none; 
+}
+
+/* Hover Efekti */
+.tab-label:hover { 
+    color: white; 
+    background: rgba(255,255,255,0.05);
+}
+
+/* Aktif Seçili Olan (Sarı Renk) */
+.tab-label.active {
+    color: #f1c40f; 
+    font-weight: 700;
+    background: rgba(241, 196, 15, 0.1); /* Arkasına hafif sarı ışık */
+    box-shadow: 0 0 15px rgba(241, 196, 15, 0.2);
+}
+
+/* ============ INPUT SATIRI (ALT KISIM) ============ */
+.search-bottom-row {
+    display: flex;
+    gap: 15px;
+    width: 100%;
+}
+
+/* Input Grupları */
+.input-group {
+    flex: 1; /* Hepsi eşit genişlikte yayılsın */
+    background: rgba(0,0,0,0.3);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    padding: 0 15px;
+    border: 1px solid transparent;
+    transition: var(--transition);
+}
+
+.input-group:focus-within {
+    border-color: var(--primary);
+    box-shadow: 0 0 10px rgba(138, 43, 226, 0.3);
+}
+
+.input-group i { color: var(--primary-light); margin-right: 10px; }
+
+.input-group input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    padding: 15px 0;
+    color: white;
+    outline: none;
+    font-size: 0.95rem;
+}
+
+/* Arama Butonu */
+.btn-search {
+    padding: 0 30px;
+    border-radius: 12px;
+    background: var(--primary);
+    color: white;
+    border: none;
+    font-weight: 700;
+    cursor: pointer;
+    transition: var(--transition);
+    white-space: nowrap; /* Yazı kaymasın */
+}
+
+.btn-search:hover {
+    background: var(--primary-light);
+    transform: scale(1.05);
+    box-shadow: 0 0 20px var(--primary);
+}
+
+/* MOBİL İÇİN DÜZELTME */
+@media (max-width: 768px) {
+    .search-bottom-row {
+        flex-direction: column; /* Mobilde inputlar alt alta gelsin */
+    }
+    .vehicle-tabs {
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+}
+
+
+/* ============ SEFER KARTLARI (YENİLENDİ) ============ */
+
+/* Kartın Dış Çerçevesi */
+.ticket-card {
+    display: grid;
+    grid-template-columns: 0.8fr 1.5fr 0.8fr; /* 3 Bölmeli Yapı */
+    gap: 20px;
+    align-items: center;
+
+    background: var(--glass-bg); /* Mevcut cam efekti */
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 24px;
+    padding: 25px 35px;
+    margin-bottom: 20px;
+    transition: all 0.4s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Hover Efekti: Kart hafif yukarı kalkar ve parlar */
+.ticket-card:hover {
+    transform: translateY(-7px);
+    border-color: var(--primary);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+    background: linear-gradient(145deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
+}
+
+/* --- SOL BÖLÜM: FİRMA & LOGO --- */
+.ticket-left {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.company-name {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.company-name i {
+    color: var(--primary); /* İkon rengi */
+    font-size: 1.4rem;
+}
+
+.ticket-type {
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    background: rgba(255,255,255,0.05);
+    padding: 4px 10px;
+    border-radius: 8px;
+    width: fit-content;
+}
+
+/* --- ORTA BÖLÜM: ROTA ZAMAN ÇİZELGESİ --- */
+.ticket-center {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    text-align: center;
+}
+
+/* Saat ve Şehir Grupları */
+.route-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 2; /* Çizginin üstünde kalsın */
+}
+
+.time {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: white;
+    line-height: 1;
+}
+
+.city {
+    font-size: 0.9rem;
+    color: var(--text-dim);
+    margin-top: 5px;
+    font-weight: 500;
+}
+
+/* Ortadaki Çizgi ve İkon */
+.route-line {
+    flex: 1;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    margin: 0 15px;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.route-line i {
+    color: var(--primary-light);
+    background: #1a1a24; /* Kart rengiyle uyumlu arka plan */
+    padding: 0 10px;
+    font-size: 0.9rem;
+}
+
+/* --- SAĞ BÖLÜM: FİYAT & BUTON --- */
+.ticket-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 10px;
+    border-left: 1px dashed rgba(255,255,255,0.1);
+    padding-left: 20px;
+}
+
+.price-tag {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #f1c40f; /* Altın sarısı fiyat rengi */
+    text-shadow: 0 0 20px rgba(241, 196, 15, 0.3);
+}
+.price-tag span {
+    font-size: 1rem;
+    font-weight: 500;
+    color: rgba(255,255,255,0.6);
+}
+
+.btn-select-seat {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 100%;
+    text-align: center;
+}
+
+.btn-select-seat:hover {
+    background: var(--primary-light);
+    transform: scale(1.05);
+    box-shadow: 0 0 15px var(--primary);
+}
+
+/* Mobil Uyumluluk */
+@media (max-width: 768px) {
+    .ticket-card {
+        grid-template-columns: 1fr; /* Mobilde alt alta */
+        text-align: center;
+        gap: 25px;
+    }
+    .ticket-left { align-items: center; }
+    .ticket-right { 
+        align-items: center; 
+        border-left: none; 
+        border-top: 1px dashed rgba(255,255,255,0.1);
+        padding-top: 20px;
+        padding-left: 0;
+    }
+}
+
+
+/* ============ AUTOCOMPLETE (BEYAZ ARKA PLAN) ENGELLEME ============ */
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active {
+    /* Yazı rengini beyaz yapıyoruz */
+    -webkit-text-fill-color: white !important;
+    
+    /* Arka plan rengi değişimini sonsuza kadar bekletiyoruz (HACK) */
+    transition: background-color 5000s ease-in-out 0s;
+    
+    /* İsteğe bağlı: Eğer hafif bir gölge kalsın istersen burayı açabilirsin
+       ama senin tasarımında şeffaf olması için üstteki transition yeterli. 
+       Yine de garanti olsun diye gölgeyi şeffaf yapıyoruz: */
+    -webkit-box-shadow: 0 0 0 30px transparent inset !important;
+}
+
+/* Favori Butonu Stili */
+.btn-fav {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%; /* Tam yuvarlak */
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+}
+
+.btn-fav:hover {
+    background: white;
+    color: #e74c3c; /* Kırmızı kalp rengi */
+    transform: scale(1.1);
+    box-shadow: 0 0 15px rgba(231, 76, 60, 0.4);
+}

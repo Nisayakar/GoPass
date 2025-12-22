@@ -36,11 +36,9 @@ public class Kullanici {
 
     @Column(name = "parola", length = 100)
     private String parola;
-
-    // İLİŞKİLER - EKLENDİ VE DÖNGÜ ENGELLENDİ
     
     @OneToMany(mappedBy = "kullanici", cascade = CascadeType.ALL)
-    @JsonIgnore // Frontend kullanıcıyı çektiğinde milyonlarca rezervasyonu çekmesin
+    @JsonIgnore 
     private List<Rezervasyon> rezervasyonlar;
 
     @OneToMany(mappedBy = "kullanici", cascade = CascadeType.ALL)

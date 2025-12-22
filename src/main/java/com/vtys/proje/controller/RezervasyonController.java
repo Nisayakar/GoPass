@@ -1,6 +1,8 @@
 package com.vtys.proje.controller;
 
 import com.vtys.proje.entity.Rezervasyon;
+import com.vtys.proje.entity.RotaPlanId; // EKLENDİ
+import com.vtys.proje.repository.RezervasyonRepository; // EKLENDİ
 import com.vtys.proje.service.RezervasyonService;
 import org.springframework.web.bind.annotation.*;
 
@@ -9,13 +11,16 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/rezervasyonlar")
-@CrossOrigin // CORS hatası almamak için
+@CrossOrigin 
 public class RezervasyonController {
 
     private final RezervasyonService service;
+    private final RezervasyonRepository repo; 
 
-    public RezervasyonController(RezervasyonService service) {
+
+    public RezervasyonController(RezervasyonService service, RezervasyonRepository repo) {
         this.service = service;
+        this.repo = repo;
     }
 
     @PostMapping
@@ -46,5 +51,19 @@ public class RezervasyonController {
     @GetMapping("/kullanici/{id}")
     public List<Rezervasyon> getByKullanici(@PathVariable Integer id) {
         return service.findByKullaniciId(id);
+    }
+
+
+    @GetMapping("/rota-plan/{rotaId}/{aracId}/{firmaId}")
+    public List<Rezervasyon> getByRotaPlan(
+            @PathVariable Integer rotaId,
+            @PathVariable Integer aracId,
+            @PathVariable Integer firmaId) {
+        
+     
+        RotaPlanId id = new RotaPlanId(rotaId, aracId, firmaId);
+        
+     
+        return repo.findByRotaPlan_Id(id);
     }
 }

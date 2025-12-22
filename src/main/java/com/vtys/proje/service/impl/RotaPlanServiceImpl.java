@@ -5,12 +5,14 @@ import com.vtys.proje.entity.RotaPlanId;
 import com.vtys.proje.repository.RotaPlanRepository;
 import com.vtys.proje.service.RotaPlanService;
 import org.springframework.stereotype.Service;
+import jakarta.transaction.Transactional; // Transaction eklemek iyidir
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class RotaPlanServiceImpl implements RotaPlanService {
 
     private final RotaPlanRepository repository;
@@ -44,9 +46,16 @@ public class RotaPlanServiceImpl implements RotaPlanService {
         return repository.findAll();
     }
 
-    // Eklenen metodun uygulaması
+
+    
     @Override
     public List<RotaPlan> sefereGoreAra(String kalkis, String varis, LocalDate tarih) {
-        return repository.aramaYap(kalkis, varis, tarih);
+        if (tarih == null) {
+        
+            return repository.findByRotaKalkisKonumSehirAndRotaVarisKonumSehir(kalkis, varis);
+        } else {
+           
+            return repository.findByRotaKalkisKonumSehirAndRotaVarisKonumSehirAndSeferTarihi(kalkis, varis, tarih);
+        }
     }
 }

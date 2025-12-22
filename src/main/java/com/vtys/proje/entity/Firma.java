@@ -2,6 +2,8 @@ package com.vtys.proje.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.List;
 
 @Entity
 @Table(name = "firma")
@@ -27,4 +29,12 @@ public class Firma {
 
     @Column(name = "islem_durumu", length = 50)
     private String islemDurumu;
+
+    @OneToMany(mappedBy = "firma")
+    @JsonIgnore 
+    private List<RotaPlan> seferler;
+
+    @OneToMany(mappedBy = "firma")
+    @JsonIgnore 
+    private List<Rezervasyon> rezervasyonlar;
 }

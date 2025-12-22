@@ -20,14 +20,14 @@ public class Bilet {
     @Column(name = "bilet_id")
     private Integer biletId;
 
-    @OneToOne(fetch = FetchType.LAZY) // Bir rezervasyonun bir bileti olur
+    @OneToOne(fetch = FetchType.LAZY) 
     @JoinColumn(name = "rezervasyon_id")
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "kullanici"}) 
     private Rezervasyon rezervasyon;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "kullanici_id")
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY) // Kullanıcıyı tekrar çekme
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY) 
     private Kullanici kullanici;
 
     @Column(name = "olusturulma_tarihi")

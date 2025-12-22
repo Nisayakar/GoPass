@@ -10,6 +10,33 @@
 
   <link rel="stylesheet" href="/css/global.css">
   <link rel="stylesheet" href="/css/home.css">
+
+  <style>
+    .vehicle-tabs {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(255,255,255,0.2);
+    }
+    .tab-label {
+      cursor: pointer;
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.95rem;
+      transition: 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .tab-label:hover { color: #fff; }
+    .tab-label.active {
+      color: #f1c40f; /* Sarı renk */
+      font-weight: 600;
+      border-bottom: 2px solid #f1c40f;
+    }
+    .tab-label input { display: none; }
+  </style>
 </head>
 <body>
 
@@ -22,15 +49,13 @@
     <a href="/" class="active">Ana Sayfa</a>
     <a href="/ticket">Biletlerim</a>
     <a href="/reservations">Rezervasyonlarım</a>
-
     <a href="/favorites">Favoriler</a>
   </div>
 
    <div class="right-panel" id="auth-box">
     <a href="/giris" class="btn-outline">Giriş Yap</a>
     <a href="/kayit" class="btn-fill">Üye Ol</a>
-</div>
-
+  </div>
 </nav>
 
 <header class="hero">
@@ -39,25 +64,48 @@
     <p>Otobüs • Uçak • Vapur – Hepsi tek uygulamada.</p>
   </div>
 
-  <div class="search-box">
-    <div class="input-group">
-      <i class="fa-solid fa-location-dot"></i>
-      <input type="text" id="kalkisInput" placeholder="Nereden?">
+ <div class="search-box">
+    
+    <div class="vehicle-tabs">
+        <label class="tab-label active">
+            <input type="radio" name="vehicleType" value="all" checked onchange="updateTab(this)">
+            <i class="fas fa-globe"></i> Tümü
+        </label>
+        <label class="tab-label">
+            <input type="radio" name="vehicleType" value="Otobüs" onchange="updateTab(this)">
+            <i class="fas fa-bus"></i> Otobüs
+        </label>
+        <label class="tab-label">
+            <input type="radio" name="vehicleType" value="Uçak" onchange="updateTab(this)">
+            <i class="fas fa-plane"></i> Uçak
+        </label>
+        <label class="tab-label">
+            <input type="radio" name="vehicleType" value="Vapur" onchange="updateTab(this)">
+            <i class="fas fa-ship"></i> Vapur
+        </label>
     </div>
 
-    <div class="input-group">
-      <i class="fa-solid fa-map-pin"></i>
-      <input type="text" id="varisInput" placeholder="Nereye?">
+    <div class="search-bottom-row">
+        <div class="input-group">
+            <i class="fa-solid fa-location-dot"></i>
+            <input type="text" id="kalkisInput" placeholder="Nereden?">
+        </div>
+
+        <div class="input-group">
+            <i class="fa-solid fa-map-pin"></i>
+            <input type="text" id="varisInput" placeholder="Nereye?">
+        </div>
+
+        <div class="input-group">
+            <i class="fa-regular fa-calendar"></i>
+            <input type="date" id="tarihInput">
+        </div>
+
+        <button id="searchBtn" class="btn-search">
+            <i class="fa-solid fa-magnifying-glass"></i> Sefer Bul
+        </button>
     </div>
 
-    <div class="input-group">
-      <i class="fa-regular fa-calendar"></i>
-      <input type="date" id="tarihInput">
-    </div>
-
-    <button id="searchBtn" class="btn-search">
-      <i class="fa-solid fa-magnifying-glass"></i> Sefer Bul
-    </button>
   </div>
 </header>
 
@@ -100,15 +148,11 @@
             </div>
         </div>
     </div>
-    </div>
-    
 </div>
 
 <script src="/js/main.js"></script>
 <script src="/js/home.js"></script>
 <script src="/js/favorites.js"></script>
-
-
 
 </body>
 </html>

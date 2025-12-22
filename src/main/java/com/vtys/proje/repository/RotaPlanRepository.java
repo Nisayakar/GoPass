@@ -10,8 +10,7 @@ import java.util.List;
 
 public interface RotaPlanRepository extends JpaRepository<RotaPlan, RotaPlanId> {
 
-    // Şehir isimleri üzerinden join yaparak arama
-    // Eğer tarih null gönderilirse (opsiyonel) sadece şehirlere göre arar.
+
     @Query("SELECT rp FROM RotaPlan rp " +
            "WHERE rp.rota.kalkisKonum.sehir = :kalkis " +
            "AND rp.rota.varisKonum.sehir = :varis " +
@@ -21,4 +20,9 @@ public interface RotaPlanRepository extends JpaRepository<RotaPlan, RotaPlanId> 
         @Param("varis") String varis, 
         @Param("tarih") LocalDate tarih
     );
+    
+    List<RotaPlan> findByRotaKalkisKonumSehirAndRotaVarisKonumSehir(String kalkis, String varis);
+
+
+    List<RotaPlan> findByRotaKalkisKonumSehirAndRotaVarisKonumSehirAndSeferTarihi(String kalkis, String varis, LocalDate seferTarihi);
 }

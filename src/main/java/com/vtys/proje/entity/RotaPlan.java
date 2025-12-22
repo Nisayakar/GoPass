@@ -19,31 +19,36 @@ public class RotaPlan {
     @EmbeddedId
     private RotaPlanId id;
 
-    // ... Mevcut ilişkiler (Rota, Arac, Firma) burada kalsın ...
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("rotaId")
     @JoinColumn(name = "rota_id")
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "planlar"}) 
     private Rota rota;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("aracId")
     @JoinColumn(name = "arac_id")
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "seferler", "koltuklar"})
     private Arac arac;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("firmaId")
     @JoinColumn(name = "firma_id")
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "seferler"})
     private Firma firma;
 
-    // --- EKLENEN ALANLAR ---
     @Column(name = "sefer_tarihi")
     private LocalDate seferTarihi;
 
     @Column(name = "sefer_saati")
     private LocalTime seferSaati;
+    
+ 
+    @Column(name = "varis_saati")
+    private LocalTime varisSaati;
 
     @Column(name = "bilet_fiyati")
     private BigDecimal biletFiyati;
