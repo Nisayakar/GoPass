@@ -22,7 +22,6 @@ public class RezervasyonController {
     @PostMapping
     public Rezervasyon save(@RequestBody Rezervasyon rezervasyon) {
         if (rezervasyon.getYolcu() == null || rezervasyon.getYolcu().getYolcuId() == null) {
-            // Eğer veritabanında kayıtlı bir yolcu ID'si gönderilmiyorsa hata verir
             throw new RuntimeException("Yolcu ID boş olamaz!");
         }
         return service.save(rezervasyon);
@@ -43,7 +42,6 @@ public class RezervasyonController {
         return service.update(r);
     }
 
-    // ❗ DURUYOR AMA KULLANMIYORUZ
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Integer id) {
         service.delete(id);
@@ -59,7 +57,6 @@ public class RezervasyonController {
         return service.findByRotaPlanId(rotaPlanId);
     }
 
-    // ✅ DOĞRU İPTAL ENDPOINT
     @PutMapping("/{id}/iptal")
     public ResponseEntity<Void> iptal(@PathVariable Integer id) {
         service.iptalEt(id);
