@@ -26,10 +26,6 @@ public class IptalPolitikasi {
     @Column(name = "durum", length = 50, nullable = false)
     private String durum;
 
-    /**
-     * İptal politikaları araçtan değil,
-     * firmadan tanımlanır.
-     */
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "firma_id", nullable = false)
     private Firma firma;
