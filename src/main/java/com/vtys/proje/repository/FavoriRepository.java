@@ -8,7 +8,6 @@ public interface FavoriRepository extends JpaRepository<Favori, Integer> {
 
     List<Favori> findByKullanici_KullaniciId(Integer kullaniciId);
 
-    // Controller'da çağırdığınız uzun metodun tanımı:
     boolean existsByKullanici_KullaniciIdAndRota_RotaIdAndFirma_FirmaId(
         Integer kullaniciId, 
         Integer rotaId, 
