@@ -38,7 +38,6 @@ public class Arac {
     @JoinColumn(name = "ulasim_turu_id")
     private UlasimTuru ulasimTuru;
 
-    // --- EKLENEN KISIM ---
     @OneToMany(mappedBy = "arac")
     @JsonIgnore
     private List<RotaPlan> seferler;
