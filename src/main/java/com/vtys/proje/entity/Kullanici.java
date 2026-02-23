@@ -30,7 +30,6 @@ public class Kullanici {
     @Column(name = "parola", length = 100)
     private String parola;
 
-    // DÜZELTME: mappedBy "yolcu" sınıfındaki "kullanici" alanına bakmalı
     @OneToMany(mappedBy = "kullanici", cascade = CascadeType.ALL)
     @JsonIgnore 
     private List<Yolcu> yolcular;
