@@ -14,7 +14,7 @@ import java.util.Optional;
 @Repository
 public interface RezervasyonRepository extends JpaRepository<Rezervasyon, Integer> {
 
-    // Rezervasyon -> Yolcu -> Kullanici yolunu izler
+
     List<Rezervasyon> findByYolcu_Kullanici_KullaniciId(Integer kullaniciId);
 
     @Query("SELECT r FROM Rezervasyon r WHERE r.rotaPlan.rotaPlanId = :rotaPlanId")
