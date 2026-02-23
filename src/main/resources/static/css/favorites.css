@@ -1,4 +1,3 @@
-/* ============ FAVORITES.CSS (DARK GLASS - BİREBİR UYUMLU) ============ */
 
 .fav-section {
     padding: 60px 5%;
@@ -22,14 +21,14 @@
     gap: 25px;
 }
 
-/* --- FAVORI KART (Bilet Kartı Rengiyle Birebir) --- */
+
 .favori-card {
     display: grid;
-    grid-template-columns: 1fr 1.5fr 0.8fr; /* 3 Bölmeli Yapı */
+    grid-template-columns: 1fr 1.5fr 0.8fr; 
     gap: 20px;
     align-items: center;
 
-    /* DÜZELTİLDİ: Artık Biletlerim ile aynı global değişkeni kullanıyor */
+   
     background: var(--glass-bg); 
     
     backdrop-filter: blur(15px);
@@ -43,7 +42,7 @@
     color: white;
 }
 
-/* Hover Efekti */
+
 .favori-card:hover {
     transform: translateY(-5px);
     border-color: rgba(255,255,255,0.2);
@@ -51,7 +50,7 @@
     background: linear-gradient(145deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
 }
 
-/* --- SOL: FİRMA --- */
+
 .fav-left {
     display: flex;
     flex-direction: column;
@@ -80,7 +79,7 @@
     letter-spacing: 1px;
 }
 
-/* --- ORTA: ROTA & TARİH --- */
+
 .fav-center {
     display: flex;
     flex-direction: column;
@@ -110,7 +109,7 @@
 }
 .date-row i { color: #f1c40f; margin-right: 5px; }
 
-/* --- SAĞ: BUTONLAR --- */
+
 .fav-right {
     display: flex;
     flex-direction: column;
@@ -163,7 +162,7 @@
     transform: scale(1.02);
 }
 
-/* MOBİL UYUMLULUK */
+
 @media (max-width: 768px) {
     .favori-card {
         grid-template-columns: 1fr;
