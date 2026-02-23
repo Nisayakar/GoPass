@@ -1,10 +1,10 @@
-/* ============ FAVORİLER SAYFASI TASARIMI ============ */
+/* ============ FAVORITES.CSS (DARK GLASS - BİREBİR UYUMLU) ============ */
 
-/* Sayfa Genel Yapısı */
 .fav-section {
     padding: 60px 5%;
     max-width: 1000px;
     margin: 0 auto;
+    min-height: 80vh;
 }
 
 .fav-section h2 {
@@ -22,14 +22,16 @@
     gap: 25px;
 }
 
-/* --- FAVORİ KARTI (GLASS EFFECT) --- */
-.fav-card {
+/* --- FAVORI KART (Bilet Kartı Rengiyle Birebir) --- */
+.favori-card {
     display: grid;
     grid-template-columns: 1fr 1.5fr 0.8fr; /* 3 Bölmeli Yapı */
     gap: 20px;
     align-items: center;
 
-    background: rgba(20, 20, 35, 0.85); /* Koyu ve şık zemin */
+    /* DÜZELTİLDİ: Artık Biletlerim ile aynı global değişkeni kullanıyor */
+    background: var(--glass-bg); 
+    
     backdrop-filter: blur(15px);
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 24px;
@@ -38,16 +40,18 @@
     position: relative;
     overflow: hidden;
     box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    color: white;
 }
 
-.fav-card:hover {
+/* Hover Efekti */
+.favori-card:hover {
     transform: translateY(-5px);
-    border-color: var(--primary);
+    border-color: rgba(255,255,255,0.2);
     box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
     background: linear-gradient(145deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
 }
 
-/* --- SOL: FİRMA BİLGİSİ --- */
+/* --- SOL: FİRMA --- */
 .fav-left {
     display: flex;
     flex-direction: column;
@@ -62,15 +66,18 @@
     align-items: center;
     gap: 10px;
 }
-.company-name i { color: var(--primary); }
+.company-name i { color: #f1c40f; }
 
 .fav-badge {
-    font-size: 0.85rem;
-    color: var(--accent);
+    font-family: monospace;
+    font-size: 0.9rem;
+    color: #e2e8f0;
     background: rgba(255,255,255,0.05);
-    padding: 4px 10px;
+    padding: 5px 12px;
     border-radius: 8px;
+    border: 1px dashed rgba(255,255,255,0.2);
     width: fit-content;
+    letter-spacing: 1px;
 }
 
 /* --- ORTA: ROTA & TARİH --- */
@@ -83,39 +90,55 @@
 }
 
 .route-row {
-    font-size: 1.3rem;
-    font-weight: 600;
-    color: white;
     display: flex;
     align-items: center;
     gap: 15px;
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: white;
 }
-.route-row i { color: var(--text-dim); font-size: 1rem; }
+.route-row i { color: rgba(255,255,255,0.5); font-size: 1rem; }
 
 .date-row {
     display: flex;
     gap: 20px;
-    color: var(--text-dim);
+    color: rgba(255,255,255,0.7);
     font-size: 0.95rem;
     background: rgba(0,0,0,0.2);
     padding: 6px 15px;
     border-radius: 20px;
 }
+.date-row i { color: #f1c40f; margin-right: 5px; }
 
-/* --- SAĞ: FİYAT & SİL BUTONU --- */
+/* --- SAĞ: BUTONLAR --- */
 .fav-right {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
-    gap: 15px;
+    gap: 12px;
     border-left: 1px solid rgba(255,255,255,0.1);
     padding-left: 25px;
 }
 
-.price-tag {
-    font-size: 1.8rem;
-    font-weight: 800;
-    color: #f1c40f;
+.btn-book {
+    background: linear-gradient(135deg, #f1c40f, #f39c12);
+    color: #1e293b;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(243, 156, 18, 0.3);
+}
+
+.btn-book:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(243, 156, 18, 0.5);
+    color: #000;
 }
 
 .btn-remove {
@@ -127,19 +150,32 @@
     cursor: pointer;
     font-weight: 600;
     transition: all 0.3s ease;
+    width: 100%;
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 8px;
 }
 
 .btn-remove:hover {
     background: #ff4757;
     color: white;
-    transform: scale(1.05);
+    transform: scale(1.02);
 }
 
 /* MOBİL UYUMLULUK */
 @media (max-width: 768px) {
-    .fav-card { grid-template-columns: 1fr; text-align: center; gap: 20px; }
-    .fav-right { border-left: none; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; padding-left: 0; align-items: center; }
+    .favori-card {
+        grid-template-columns: 1fr;
+        text-align: center;
+        gap: 20px;
+    }
+    .fav-left, .fav-right { align-items: center; }
+    .fav-right { 
+        border-left: none; 
+        border-top: 1px solid rgba(255,255,255,0.1); 
+        padding-top: 20px; 
+        padding-left: 0;
+        width: 100%;
+    }
 }

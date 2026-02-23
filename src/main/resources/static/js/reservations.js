@@ -31,20 +31,27 @@ document.addEventListener("DOMContentLoaded", async () => {
   
       // 4. Kartları Oluştur
       data.forEach(r => {
-        // --- GÜVENLİ VERİ ALMA (Null Check) ---
+        // --- GÜVENLİ VERİ ALMA ---
         const plan = r.rotaPlan || {};
         const rota = plan.rota || {};
-        const firma = r.firma || (plan.firma || {}); // Firma bazen dışta bazen içte olabilir
+        
+        // DİKKAT: Firma bilgisi Araç içindedir. Zinciri şöyle kuruyoruz:
+        const arac = plan.arac || {};       // Önce RotaPlan içinden Aracı al
+        const firma = arac.firma || {};     // Sonra Araç içinden Firmayı al
+        
         const koltuk = r.koltuk || {};
         
-        const firmaAdi = firma.firmaAdi || "Firma ?";
-        const kalkis = (rota.kalkisKonum && rota.kalkisKonum.sehir) ? rota.kalkisKonum.sehir : "Kalkış?";
-        const varis = (rota.varisKonum && rota.varisKonum.sehir) ? rota.varisKonum.sehir : "Varış?";
+        const firmaAdi = firma.firmaAdi || "Firma Belirtilmemiş";
+		const kalkis = rota.kalkisKonum?.sehir?.sehirAdi || "Kalkış?";
+		const varis  = rota.varisKonum?.sehir?.sehirAdi  || "Varış?";
+
         
         const tarih = plan.seferTarihi || "-";
         const saat = plan.seferSaati || "-";
         const koltukNo = koltuk.koltukNo || "?";
         const fiyat = r.fiyat || 0;
+        
+        // --- GÜNCELLENEN KISIM BAŞLANGIÇ ---
         const durum = r.durum || "Belirsiz";
   
         // Duruma göre CSS sınıfı belirle
@@ -52,7 +59,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (durum === "Biletlendi") durumClass = "biletlendi";
         else if (durum === "İptal") durumClass = "iptal";
   
-        // Sadece "Beklemede" ise Satın Al butonu göster
+        // 1. Satın Al Butonu (Sadece 'Beklemede' ise görünür)
         let buyButtonHTML = "";
         if (durum === 'Beklemede') {
             buyButtonHTML = `
@@ -60,6 +67,17 @@ document.addEventListener("DOMContentLoaded", async () => {
                 <i class="fa-solid fa-credit-card"></i> Satın Al
             </button>`;
         }
+
+        // 2. İptal Et Butonu (Sadece 'Beklemede' ise görünür)
+        // Eğer Biletlendiyse veya İptal ise bu buton html'e eklenmez.
+        let cancelButtonHTML = "";
+        if (durum === 'Beklemede') {
+            cancelButtonHTML = `
+            <button onclick="rezervasyonIptal(${r.rezervasyonId})" class="btn-cancel">
+                <i class="fas fa-times"></i> İptal Et
+            </button>`;
+        }
+        // --- GÜNCELLENEN KISIM BİTİŞ ---
   
         // HTML KARTI
         list.innerHTML += `
@@ -88,9 +106,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 
                 <div class="action-buttons">
                     ${buyButtonHTML}
-                    <button onclick="rezervasyonIptal(${r.rezervasyonId})" class="btn-cancel">
-                        <i class="fas fa-times"></i> İptal Et
-                    </button>
+                    ${cancelButtonHTML}
                 </div>
             </div>
     
@@ -137,16 +153,19 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
   
   async function rezervasyonIptal(id) {
-      if(!confirm("Rezervasyonu iptal etmek istediğinize emin misiniz?")) return;
-      
+      if (!confirm("Rezervasyonu iptal etmek istediğinize emin misiniz?")) return;
+
       try {
-        const res = await fetch(`/api/rezervasyonlar/${id}`, { method: "DELETE" });
-        if(res.ok) {
-            alert("Rezervasyon iptal edildi.");
-            location.reload();
-        } else {
-            alert("İptal işlemi başarısız oldu.");
-        }
+          const res = await fetch(`/api/rezervasyonlar/${id}/iptal`, {
+              method: "PUT"
+          });
+
+          if (res.ok) {
+              alert("Rezervasyon iptal edildi.");
+              location.reload();
+          } else {
+              alert("İptal işlemi başarısız oldu.");
+          }
       } catch (error) {
           console.error(error);
           alert("Bir hata oluştu.");

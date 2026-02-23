@@ -5,8 +5,6 @@ import com.vtys.proje.service.RotaPlanService;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeParseException;
-import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -16,7 +14,6 @@ public class RotaPlanController {
 
     private final RotaPlanService service;
 
- 
     public RotaPlanController(RotaPlanService service) {
         this.service = service;
     }
@@ -31,23 +28,25 @@ public class RotaPlanController {
         return service.findAll();
     }
 
-    @GetMapping("/ara")
-    public List<RotaPlan> ara(
+    // --- DÜZELTİLEN KISIM ---
+    @GetMapping("/sefer-ara")
+    public List<RotaPlan> seferAra(
             @RequestParam String kalkis,
             @RequestParam String varis,
-            @RequestParam(required = false) String tarih) {
-
-        LocalDate searchDate = null;
-
-        if (tarih != null && !tarih.trim().isEmpty()) {
+            @RequestParam String tip,
+            @RequestParam(value = "tarih", required = false) String tarihStr // String olarak alıyoruz
+    ) {
+        LocalDate tarih = null;
+        // Eğer gelen tarih stringi boş değilse LocalDate'e çeviriyoruz
+        if (tarihStr != null && !tarihStr.isEmpty()) {
             try {
-                searchDate = LocalDate.parse(tarih);
-            } catch (DateTimeParseException e) {
-                return Collections.emptyList();
+                tarih = LocalDate.parse(tarihStr);
+            } catch (Exception e) {
+                // Hatalı format gelirse tarihi null bırak (aramayı bozmaz, tarihsiz arar)
+                tarih = null;
             }
         }
-
-        // ARTIK SERVICE METODUNU ÇAĞIRIYORUZ
-        return service.sefereGoreAra(kalkis, varis, searchDate);
+        
+        return service.seferAra(kalkis, varis, tip, tarih);
     }
 }

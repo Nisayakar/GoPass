@@ -35,17 +35,23 @@ document.addEventListener("DOMContentLoaded", async () => {
         // 4. Biletleri Listele (GÜVENLİ DÖNGÜ)
         data.forEach(b => {
             // Veri parçalarını güvenli şekilde alalım (Zincirleme kontrol)
-            // Eğer bir veri yoksa "undefined" yerine null dönsün
             const rez = b.rezervasyon || {}; 
             const plan = rez.rotaPlan || {};
             const rota = plan.rota || {};
-            const firma = rez.firma || (plan.firma || {}); // Firma bilgisi bazen planda bazen rezervasyonda olabilir
+            
+            // --- DÜZELTİLEN KISIM BAŞLANGIÇ ---
+            // Firma bilgisi 'Arac' içindedir.
+            const arac = plan.arac || {};
+            const firma = arac.firma || {}; 
+            // --- DÜZELTİLEN KISIM BİTİŞ ---
+
             const koltuk = rez.koltuk || {};
             
             // Değerleri hazırla (Yoksa varsayılan metin koy)
-            const firmaAdi = firma.firmaAdi || "Firma Belirtilmemiş";
-            const kalkis = (rota.kalkisKonum && rota.kalkisKonum.sehir) ? rota.kalkisKonum.sehir : "Kalkış?";
-            const varis = (rota.varisKonum && rota.varisKonum.sehir) ? rota.varisKonum.sehir : "Varış?";
+            const firmaAdi = firma.firmaAdi || "Firma Belirtilmemiş"; // Artık doğru çalışır
+			const kalkis = rota.kalkisKonum?.sehir?.sehirAdi || "Kalkış?";
+			const varis  = rota.varisKonum?.sehir?.sehirAdi  || "Varış?";
+
             
             const tarih = plan.seferTarihi || "Tarih Yok";
             const saat = plan.seferSaati || "--:--";
@@ -113,7 +119,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }
 
-  // --- FAVORİ EKLEME FONKSİYONU ---
+  // --- FAVORİ EKLEME FONKSİYONU (Aynen kalabilir) ---
 window.toggleFavorite = async (rotaId, aracId, firmaId) => {
     const user = JSON.parse(localStorage.getItem("user"));
     
@@ -149,8 +155,7 @@ window.toggleFavorite = async (rotaId, aracId, firmaId) => {
         });
 
         if(res.ok) {
-            // Başarılı! (İstersen alert koymayabilirsin, görsel yeterli)
-            // alert("Favorilere eklendi! ❤️");
+            // Başarılı!
         } else {
             alert("Bir hata oluştu veya zaten ekli.");
             // Hata olursa geri al

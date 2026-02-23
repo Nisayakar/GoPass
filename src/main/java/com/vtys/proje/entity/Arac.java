@@ -25,9 +25,6 @@ public class Arac {
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "seferler"})
     private Firma firma;
 
-    @Column(name = "arac_tipi", length = 100)
-    private String aracTipi;
-
     @Column(name = "arac_no", length = 50)
     private String aracNo;
 

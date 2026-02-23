@@ -61,18 +61,35 @@
 }
 
 .btn-search {
-    padding: 0 30px;
-    border-radius: 12px;
-    background: var(--primary);
+    background: #8e44ad; /* Görseldeki mor tonu */
     color: white;
     border: none;
-    font-weight: 700;
+    padding: 0 25px; /* İç boşluğu biraz daralttık */
+    height: 48px; /* Yüksekliği ideal bir seviyeye çektik */
+    border-radius: 12px; /* Köşeleri giriş kutularına uyumlu hale getirdik */
+    font-size: 0.95rem; /* Yazı tipini hafif küçülttük */
+    font-weight: 600;
     cursor: pointer;
-    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-width: 130px; /* Çok daralmaması için alt sınır */
+    transition: all 0.3s ease;
 }
+
 .btn-search:hover {
-    background: var(--primary-light);
-    transform: scale(1.05);
+    background: #9b59b6;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(142, 68, 173, 0.2);
+}
+
+/* Mobil uyum için ufak bir dokunuş */
+@media (max-width: 768px) {
+    .btn-search {
+        width: 100%; /* Mobilde tam genişlik her zaman daha iyi görünür */
+        height: 50px;
+    }
 }
 
 /* ============ SONUÇ KARTLARI ============ */

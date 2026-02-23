@@ -17,16 +17,20 @@ public class IptalPolitikasi {
     @Column(name = "iptal_politikasi_id")
     private Integer iptalPolitikasiId;
 
-    @Column(name = "politika")
+    @Column(name = "politika", nullable = false)
     private String politika;
 
-    @Column(name = "fiyat", precision = 10, scale = 2)
+    @Column(name = "fiyat", precision = 5, scale = 2)
     private BigDecimal fiyat;
 
-    @Column(name = "durum", length = 50)
+    @Column(name = "durum", length = 50, nullable = false)
     private String durum;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "arac_id")
-    private Arac arac;
+    /**
+     * İptal politikaları araçtan değil,
+     * firmadan tanımlanır.
+     */
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "firma_id", nullable = false)
+    private Firma firma;
 }

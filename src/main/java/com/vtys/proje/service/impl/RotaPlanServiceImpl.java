@@ -1,7 +1,6 @@
 package com.vtys.proje.service.impl;
 
 import com.vtys.proje.entity.RotaPlan;
-import com.vtys.proje.entity.RotaPlanId;
 import com.vtys.proje.repository.RotaPlanRepository;
 import com.vtys.proje.service.RotaPlanService;
 import org.springframework.stereotype.Service;
@@ -32,30 +31,19 @@ public class RotaPlanServiceImpl implements RotaPlanService {
     }
 
     @Override
-    public void delete(RotaPlanId id) {
-        repository.deleteById(id);
-    }
-
-    @Override
-    public Optional<RotaPlan> findById(RotaPlanId id) {
-        return repository.findById(id);
-    }
-
-    @Override
     public List<RotaPlan> findAll() {
         return repository.findAll();
     }
 
 
-    
     @Override
-    public List<RotaPlan> sefereGoreAra(String kalkis, String varis, LocalDate tarih) {
-        if (tarih == null) {
-        
-            return repository.findByRotaKalkisKonumSehirAndRotaVarisKonumSehir(kalkis, varis);
-        } else {
-           
-            return repository.findByRotaKalkisKonumSehirAndRotaVarisKonumSehirAndSeferTarihi(kalkis, varis, tarih);
-        }
+    public List<RotaPlan> seferAra(
+            String kalkis,
+            String varis,
+            String tip,
+            LocalDate tarih
+    ) {
+        return repository.seferAra(kalkis, varis, tip, tarih);
     }
+
 }

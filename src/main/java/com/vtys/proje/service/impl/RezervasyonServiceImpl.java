@@ -1,12 +1,12 @@
 package com.vtys.proje.service.impl;
 
-import com.vtys.proje.entity.Koltuk;
 import com.vtys.proje.entity.Rezervasyon;
-import com.vtys.proje.repository.KoltukRepository;
 import com.vtys.proje.repository.RezervasyonRepository;
 import com.vtys.proje.service.RezervasyonService;
-import jakarta.transaction.Transactional;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -14,59 +14,83 @@ import java.util.Optional;
 @Transactional
 public class RezervasyonServiceImpl implements RezervasyonService {
 
-    private final RezervasyonRepository rezervasyonRepository;
-    private final KoltukRepository koltukRepository;
+    private final RezervasyonRepository repository;
+    private final JdbcTemplate jdbcTemplate;
 
-    public RezervasyonServiceImpl(RezervasyonRepository rezervasyonRepository, KoltukRepository koltukRepository) {
-        this.rezervasyonRepository = rezervasyonRepository;
-        this.koltukRepository = koltukRepository;
+    public RezervasyonServiceImpl(RezervasyonRepository repository, JdbcTemplate jdbcTemplate) {
+        this.repository = repository;
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     @Override
-    public Rezervasyon save(Rezervasyon r) {
-  
-        if (r.getRotaPlan() == null || r.getRotaPlan().getId() == null) {
-            throw new RuntimeException("Rezervasyon için sefer (RotaPlan) bilgisi eksik!");
+    public Rezervasyon save(Rezervasyon rezervasyon) {
+        // Tüm nesne zincirini kontrol edelim
+        if (rezervasyon == null) {
+            throw new RuntimeException("Rezervasyon nesnesi null gönderilemez!");
+        }
+        
+        if (rezervasyon.getYolcu() == null) {
+            throw new RuntimeException("Rezervasyon içinde Yolcu nesnesi bulunamadı!");
         }
 
-   
-        boolean doluMu = rezervasyonRepository.existsByRotaPlan_IdAndKoltuk_KoltukId(
-                r.getRotaPlan().getId(), // RotaPlanId nesnesi (Composite Key)
-                r.getKoltuk().getKoltukId()
+        if (rezervasyon.getRotaPlan() == null || rezervasyon.getKoltuk() == null) {
+            throw new RuntimeException("Rota Planı veya Koltuk bilgisi eksik!");
+        }
+
+        // Çifte Rezervasyon Kontrolü
+        Optional<Rezervasyon> mevcut = repository.findByRotaPlanIdAndKoltukId(
+            rezervasyon.getRotaPlan().getRotaPlanId(),
+            rezervasyon.getKoltuk().getKoltukId()
         );
 
-        if (doluMu) {
+        if (mevcut.isPresent() && !"İptal".equals(mevcut.get().getDurum())) {
             throw new RuntimeException("Bu koltuk bu sefer için zaten dolu!");
         }
 
+        if ("Biletlendi".equals(rezervasyon.getDurum())) {
+            Double fiyat = (rezervasyon.getFiyat() != null) ? rezervasyon.getFiyat().doubleValue() : 0.0;
+            
+            String sql = "CALL sp_bilet_satis(?, ?, ?, CAST(? AS NUMERIC))";
+            
+            // Parametreleri doğrudan değişkene alıp kontrol edelim
+            Integer yolcuId = rezervasyon.getYolcu().getYolcuId();
+            Integer rotaPlanId = rezervasyon.getRotaPlan().getRotaPlanId();
+            Integer koltukId = rezervasyon.getKoltuk().getKoltukId();
 
-        
-        r.setDurum("Beklemede");
-        return rezervasyonRepository.save(r);
+            jdbcTemplate.update(sql, yolcuId, rotaPlanId, koltukId, fiyat);
+            return rezervasyon; 
+        } else {
+            return repository.save(rezervasyon);
+        }
     }
 
     @Override
-    public void delete(Integer id) {
-        rezervasyonRepository.deleteById(id);
+    public List<Rezervasyon> findByKullaniciId(Integer kullaniciId) {
+        return repository.findByYolcu_Kullanici_KullaniciId(kullaniciId);
     }
 
-    @Override 
-    public Rezervasyon update(Rezervasyon r) { 
-        return rezervasyonRepository.save(r); 
+    @Override
+    public List<Rezervasyon> findByRotaPlanId(Integer rotaPlanId) {
+        return repository.findByRotaPlanId(rotaPlanId);
     }
-    
-    @Override 
-    public Optional<Rezervasyon> findById(Integer id) { 
-        return rezervasyonRepository.findById(id); 
-    }
-    
-    @Override 
-    public List<Rezervasyon> findAll() { 
-        return rezervasyonRepository.findAll(); 
-    }
-    
-    @Override 
-    public List<Rezervasyon> findByKullaniciId(Integer kullaniciId) { 
-        return rezervasyonRepository.findByKullanici_KullaniciId(kullaniciId); 
+
+    @Override
+    public Rezervasyon update(Rezervasyon r) { return repository.save(r); }
+
+    @Override
+    public void delete(Integer id) { repository.deleteById(id); }
+
+    @Override
+    public Optional<Rezervasyon> findById(Integer id) { return repository.findById(id); }
+
+    @Override
+    public List<Rezervasyon> findAll() { return repository.findAll(); }
+
+    @Override
+    public void iptalEt(Integer id) {
+        repository.findById(id).ifPresentOrElse(rez -> {
+            rez.setDurum("İptal");
+            repository.save(rez);
+        }, () -> { throw new RuntimeException("Rezervasyon bulunamadı"); });
     }
 }

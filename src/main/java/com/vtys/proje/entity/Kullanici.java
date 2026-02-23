@@ -2,9 +2,8 @@ package com.vtys.proje.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import java.time.LocalDate;
-import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.List;
 
 @Entity
 @Table(name = "kullanici")
@@ -25,25 +24,16 @@ public class Kullanici {
     @Column(name = "soyisim", nullable = false, length = 100)
     private String soyisim;
 
-    @Column(name = "dogum_tarihi")
-    private LocalDate dogumTarihi;
-
-    @Column(name = "adres", length = 255)
-    private String adres;
-
     @Column(name = "eposta", unique = true, length = 150)
     private String eposta;
 
     @Column(name = "parola", length = 100)
     private String parola;
-    
-    @OneToMany(mappedBy = "kullanici", cascade = CascadeType.ALL)
-    @JsonIgnore 
-    private List<Rezervasyon> rezervasyonlar;
 
+    // DÜZELTME: mappedBy "yolcu" sınıfındaki "kullanici" alanına bakmalı
     @OneToMany(mappedBy = "kullanici", cascade = CascadeType.ALL)
     @JsonIgnore 
-    private List<Bilet> biletler;
+    private List<Yolcu> yolcular;
 
     @OneToMany(mappedBy = "kullanici", cascade = CascadeType.ALL)
     @JsonIgnore 

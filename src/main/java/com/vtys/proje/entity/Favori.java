@@ -2,17 +2,20 @@ package com.vtys.proje.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+
 import java.time.LocalDate;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
-@Table(name = "favori")
+@Table(
+    name = "favori",
+    uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"kullanici_id", "rota_id"})
+    }
+)
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Favori {
 
     @Id
@@ -21,24 +24,18 @@ public class Favori {
     private Integer favoriId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "kullanici_id")
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @JoinColumn(name = "kullanici_id", nullable = false)
     private Kullanici kullanici;
-
- 
+    
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumns({
-        @JoinColumn(name = "rota_id", referencedColumnName = "rota_id"),
-        @JoinColumn(name = "arac_id", referencedColumnName = "arac_id"),
-        @JoinColumn(name = "firma_id", referencedColumnName = "firma_id")
-    })
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "firma", "arac"}) 
-    private RotaPlan rotaPlan;
-  
+    @JoinColumn(name = "firma_id", nullable = false)
+    private Firma firma;
 
-    @Column(name = "favori_tipi", length = 100)
-    private String favoriTipi;
 
-    @Column(name = "eklenme_tarihi")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "rota_id", nullable = false)
+    private Rota rota;
+
+    @Column(name = "eklenme_tarihi", nullable = false)
     private LocalDate eklenmeTarihi;
 }

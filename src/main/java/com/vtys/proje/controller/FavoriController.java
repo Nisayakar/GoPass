@@ -3,7 +3,7 @@ package com.vtys.proje.controller;
 import com.vtys.proje.entity.Favori;
 import com.vtys.proje.repository.FavoriRepository;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.http.ResponseEntity; // Bunu eklemeyi unutma
+import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -21,29 +21,35 @@ public class FavoriController {
 
     @PostMapping
     public ResponseEntity<?> ekle(@RequestBody Favori f) {
-        boolean zateVar = repo.existsByKullanici_KullaniciIdAndRotaPlan_Id(
-            f.getKullanici().getKullaniciId(),
-            f.getRotaPlan().getId()
+
+        // ⚠️ 1. KONTROL: Firma bilgisi geliyor mu?
+        if (f.getKullanici() == null || f.getRota() == null || f.getFirma() == null) {
+            return ResponseEntity.badRequest().body("Eksik favori bilgisi");
+        }
+
+        // ⚠️ 2. KONTROL: Repository metodunu yeni ismine göre çağırıyoruz.
+        boolean zatenVar = repo.existsByKullanici_KullaniciIdAndRota_RotaIdAndFirma_FirmaId(
+                f.getKullanici().getKullaniciId(),
+                f.getRota().getRotaId(),
+                f.getFirma().getFirmaId()
         );
 
-        if (zateVar) {
-            return ResponseEntity.status(409).body("Bu sefer zaten favorilerinizde ekli!");
+        if (zatenVar) {
+            return ResponseEntity.status(409).body("Bu rota ve firma zaten favorilerinizde");
         }
+
         f.setEklenmeTarihi(LocalDate.now());
-        Favori yeniFavori = repo.save(f);
-        
-        return ResponseEntity.ok(yeniFavori);
+        return ResponseEntity.ok(repo.save(f));
     }
+
 
     @GetMapping("/kullanici/{id}")
     public List<Favori> liste(@PathVariable Integer id) {
         return repo.findByKullanici_KullaniciId(id);
     }
 
-
     @DeleteMapping("/{id}")
     public ResponseEntity<String> sil(@PathVariable Integer id) {
-       
         repo.deleteById(id);
         return ResponseEntity.ok("Favori silindi");
     }

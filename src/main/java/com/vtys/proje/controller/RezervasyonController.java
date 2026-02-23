@@ -1,9 +1,8 @@
 package com.vtys.proje.controller;
 
 import com.vtys.proje.entity.Rezervasyon;
-import com.vtys.proje.entity.RotaPlanId; // EKLENDİ
-import com.vtys.proje.repository.RezervasyonRepository; // EKLENDİ
 import com.vtys.proje.service.RezervasyonService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -11,21 +10,22 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/rezervasyonlar")
-@CrossOrigin 
+@CrossOrigin
 public class RezervasyonController {
 
     private final RezervasyonService service;
-    private final RezervasyonRepository repo; 
 
-
-    public RezervasyonController(RezervasyonService service, RezervasyonRepository repo) {
+    public RezervasyonController(RezervasyonService service) {
         this.service = service;
-        this.repo = repo;
     }
 
     @PostMapping
-    public Rezervasyon save(@RequestBody Rezervasyon r) {
-        return service.save(r);
+    public Rezervasyon save(@RequestBody Rezervasyon rezervasyon) {
+        if (rezervasyon.getYolcu() == null || rezervasyon.getYolcu().getYolcuId() == null) {
+            // Eğer veritabanında kayıtlı bir yolcu ID'si gönderilmiyorsa hata verir
+            throw new RuntimeException("Yolcu ID boş olamaz!");
+        }
+        return service.save(rezervasyon);
     }
 
     @GetMapping
@@ -43,27 +43,26 @@ public class RezervasyonController {
         return service.update(r);
     }
 
+    // ❗ DURUYOR AMA KULLANMIYORUZ
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Integer id) {
         service.delete(id);
     }
-    
+
     @GetMapping("/kullanici/{id}")
     public List<Rezervasyon> getByKullanici(@PathVariable Integer id) {
         return service.findByKullaniciId(id);
     }
 
+    @GetMapping("/rota-plan/{rotaPlanId}")
+    public List<Rezervasyon> getRezervasyonlarByRotaPlan(@PathVariable Integer rotaPlanId) {
+        return service.findByRotaPlanId(rotaPlanId);
+    }
 
-    @GetMapping("/rota-plan/{rotaId}/{aracId}/{firmaId}")
-    public List<Rezervasyon> getByRotaPlan(
-            @PathVariable Integer rotaId,
-            @PathVariable Integer aracId,
-            @PathVariable Integer firmaId) {
-        
-     
-        RotaPlanId id = new RotaPlanId(rotaId, aracId, firmaId);
-        
-     
-        return repo.findByRotaPlan_Id(id);
+    // ✅ DOĞRU İPTAL ENDPOINT
+    @PutMapping("/{id}/iptal")
+    public ResponseEntity<Void> iptal(@PathVariable Integer id) {
+        service.iptalEt(id);
+        return ResponseEntity.ok().build();
     }
 }

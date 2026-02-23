@@ -1,38 +1,35 @@
 package com.vtys.proje.service.impl;
 
 import com.vtys.proje.entity.Koltuk;
+import com.vtys.proje.entity.RotaPlan;
 import com.vtys.proje.repository.KoltukRepository;
+import com.vtys.proje.repository.RotaPlanRepository;
 import com.vtys.proje.service.KoltukService;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class KoltukServiceImpl implements KoltukService {
 
-    private final KoltukRepository repository;
+    private final KoltukRepository koltukRepository;
+    private final RotaPlanRepository rotaPlanRepository;
 
-    public KoltukServiceImpl(KoltukRepository repository) {
-        this.repository = repository;
+    public KoltukServiceImpl(KoltukRepository koltukRepository,
+                             RotaPlanRepository rotaPlanRepository) {
+        this.koltukRepository = koltukRepository;
+        this.rotaPlanRepository = rotaPlanRepository;
     }
 
-    public Koltuk save(Koltuk k) {
-        return repository.save(k);
-    }
+    @Override
+    public List<Koltuk> getKoltuklarByRotaPlanId(Integer rotaPlanId) {
 
-    public Koltuk update(Koltuk k) {
-        return repository.save(k);
-    }
+        RotaPlan rotaPlan = rotaPlanRepository.findById(rotaPlanId)
+                .orElseThrow(() -> new RuntimeException("Sefer bulunamadı"));
 
-    public void delete(Integer id) {
-        repository.deleteById(id);
-    }
+        Integer aracId = rotaPlan.getArac().getAracId();
 
-    public Optional<Koltuk> findById(Integer id) {
-        return repository.findById(id);
-    }
-
-    public List<Koltuk> findAll() {
-        return repository.findAll();
+        return koltukRepository
+                .findByArac_AracIdOrderByKoltukNoAsc(aracId);
     }
 }

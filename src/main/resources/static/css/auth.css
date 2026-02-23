@@ -57,18 +57,28 @@
     outline: none;
 }
 
+/* Modal butonlarını ideal boyuta getiren güncel stil */
 .auth-btn {
-    width: 100%;
-    padding: 14px;
-    border-radius: 12px;
-    background: linear-gradient(90deg, var(--primary), var(--primary-light));
-    color: white;
-    border: none;
-    font-size: 1.1rem;
-    font-weight: 700;
+    padding: 10px 20px; /* Yüksekliği ve genişliği daralttık */
+    font-size: 0.9rem;  /* Yazı boyutunu küçülttük */
+    font-weight: 600;
+    border-radius: 8px; /* Köşeleri biraz daha keskin ve modern yaptık */
     cursor: pointer;
-    transition: var(--transition);
-    margin-top: 10px;
+    transition: all 0.3s ease;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 42px; /* Sabit bir yükseklik verdik */
+    width: auto;  /* İçeriğe göre genişlemesini sağladık */
+    min-width: 120px;
+}
+
+/* Butonların yan yana çok yayılmaması için alt kısım düzenlemesi */
+.modal-footer div[style*="display: flex"] {
+    justify-content: center; /* Butonları ortalar */
+    gap: 10px;
 }
 .auth-btn:hover {
     box-shadow: 0 5px 25px rgba(138, 43, 226, 0.5);
@@ -82,3 +92,5 @@
     color: var(--text-dim);
 }
 .auth-footer a { color: var(--primary-light); font-weight: 600; }
+
+

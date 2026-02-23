@@ -30,11 +30,6 @@ public class Firma {
     @Column(name = "islem_durumu", length = 50)
     private String islemDurumu;
 
-    @OneToMany(mappedBy = "firma")
-    @JsonIgnore 
-    private List<RotaPlan> seferler;
 
-    @OneToMany(mappedBy = "firma")
-    @JsonIgnore 
-    private List<Rezervasyon> rezervasyonlar;
+   
 }

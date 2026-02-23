@@ -1,17 +1,16 @@
+// home.js - Düzeltilmiş Versiyon (Entity Hatası Giderildi)
+
 let selectedSeat = null;
 let currentRotaPlan = {}; 
-let selectedVehicleType = "all"; // Varsayılan filtre
-let allFetchedData = []; // Çekilen sefer verilerini burada tutacağız
+let selectedVehicleType = "all"; 
+let allFetchedData = []; 
 
 // --- TAB DEĞİŞTİĞİNDE ÇALIŞAN FONKSİYON ---
 window.updateTab = (radio) => {
     selectedVehicleType = radio.value;
-    
-    // 1. Görsel olarak aktif butonu güncelle
     document.querySelectorAll('.tab-label').forEach(label => label.classList.remove('active'));
     radio.parentElement.classList.add('active');
 
-    // 2. Eğer elimizde arama sonucu varsa listeyi hemen güncelle
     if(allFetchedData.length > 0) {
         renderSeferler();
     }
@@ -24,51 +23,76 @@ function renderSeferler() {
 
     resultsList.innerHTML = "";
 
-    // 1. Filtreleme İşlemi
+    // 1. Türkçe karakter düzeltme fonksiyonu
+    const normalize = (str) => {
+        if(!str) return ""; 
+        return str.toLowerCase()
+                  .replace(/ç/g, 'c')
+                  .replace(/ğ/g, 'g')
+                  .replace(/ü/g, 'u')
+                  .replace(/ş/g, 's')
+                  .replace(/ö/g, 'o')
+                  .replace(/ı/g, 'i');
+    };
+
+    // 2. Veriyi filtrele
     const filteredData = allFetchedData.filter(plan => {
-        // "Tümü" seçiliyse hepsini göster
         if (selectedVehicleType === "all") return true;
+
+        // ✅ KRİTİK DÜZELTME: Veri yolunu 'ulasimTuru' üzerinden alıyoruz
+        let gelenAracTipi = "Araç";
+        if (plan.arac && plan.arac.ulasimTuru && plan.arac.ulasimTuru.aracTipi) {
+            gelenAracTipi = plan.arac.ulasimTuru.aracTipi;
+        } else if (plan.arac && plan.arac.aracTipi) {
+            gelenAracTipi = plan.arac.aracTipi; // Yedek kontrol
+        }
         
-        // HATA ÖNLEYİCİ: Araç bilgisi veya tipi yoksa hata verme, o kaydı atla
-        if (!plan.arac || !plan.arac.aracTipi) return false;
-        
-        // Araç tipini kontrol et (Küçük harfe çevirerek)
-        return plan.arac.aracTipi.toLowerCase().includes(selectedVehicleType.toLowerCase());
+        const dbTip = normalize(gelenAracTipi);
+        const secilenTip = normalize(selectedVehicleType);
+
+        return dbTip.includes(secilenTip);
     });
 
-    // 2. Sonuç Yoksa Mesaj Göster
+    // Sonuç yoksa uyarı göster
     if (filteredData.length === 0) {
         resultsList.innerHTML = `
-            <div class="no-result">
-                <p>Aradığınız kriterlere uygun <b>${selectedVehicleType === 'all' ? '' : selectedVehicleType}</b> seferi bulunamadı.</p>
+            <div class="no-result" style="text-align:center; color:white; padding:20px;">
+                <p>Aradığınız kriterlere uygun sefer bulunamadı.</p>
             </div>`;
         resultsSection.classList.remove("hidden");
         return;
     }
 
-    // 3. Kartları Oluştur ve Ekrana Bas
-   // 3. Kartları Oluştur ve Ekrana Bas
+    // Listeleme
     filteredData.forEach(plan => {
-        // --- DEĞİŞKENLERİ HAZIRLAMA (AYNEN KORUNDU) ---
-        const firmaAd = plan.firma ? plan.firma.firmaAdi : "Firma";
-        const kalkis = plan.rota ? plan.rota.kalkisKonum.sehir : "?";
-        const varis = plan.rota ? plan.rota.varisKonum.sehir : "?";
+        const firmaAd = plan.firma ? plan.firma.firmaAdi : (plan.arac && plan.arac.firma ? plan.arac.firma.firmaAdi : "Firma");
+		const kalkis = plan.rota?.kalkisKonum?.sehir?.sehirAdi || "?";
+		const varis  = plan.rota?.varisKonum?.sehir?.sehirAdi  || "?";
+
         const saat = plan.seferSaati || "";
         const sure = plan.tahminiSure || "";
         const fiyat = plan.biletFiyati;
-        const aracTipi = (plan.arac && plan.arac.aracTipi) ? plan.arac.aracTipi : "Araç";
+
+        // ✅ KRİTİK DÜZELTME 2: Burada da doğru yolu kullanıyoruz
+        let aracTipi = "Araç";
+        if (plan.arac && plan.arac.ulasimTuru && plan.arac.ulasimTuru.aracTipi) {
+            aracTipi = plan.arac.ulasimTuru.aracTipi;
+        }
+
+        const rotaPlanId = plan.rotaPlanId; 
+        const realRotaId = plan.rota ? plan.rota.rotaId : 0; 
+        const aracId = plan.arac ? plan.arac.aracId : 0;
         
-        // ID'leri güvenli şekilde al
-        const rId = plan.id ? plan.id.rotaId : 0;
-        const aId = plan.id ? plan.id.aracId : 0;
-        const fId = plan.id ? plan.id.firmaId : 0;
+        const firmaId = plan.arac && plan.arac.firma 
+            ? plan.arac.firma.firmaId 
+            : (plan.firma ? plan.firma.firmaId : 0);
 
-        // İkon seçimi
+        // İkon belirleme
         let iconClass = "fa-bus";
-        if(aracTipi.toLowerCase().includes("uçak")) iconClass = "fa-plane";
-        else if(aracTipi.toLowerCase().includes("vapur") || aracTipi.toLowerCase().includes("gemi")) iconClass = "fa-ship";
+        const normalizedType = normalize(aracTipi);
+        if(normalizedType.includes("ucak")) iconClass = "fa-plane";
+        else if(normalizedType.includes("vapur") || normalizedType.includes("gemi")) iconClass = "fa-ship";
 
-        // --- YENİ MODERN HTML TASARIMI BURADA ---
         resultsList.innerHTML += `
         <div class="ticket-card animate__animated animate__fadeInUp">
             
@@ -89,7 +113,7 @@ function renderSeferler() {
             <div class="ticket-right">
                 <div class="price-row" style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
                     
-                    <button class="btn-fav" onclick="toggleFavorite(${rId}, ${aId}, ${fId})" title="Favorilere Ekle">
+                    <button class="btn-fav" onclick="toggleFavorite(${realRotaId}, ${firmaId})" title="Favorilere Ekle">
                         <i class="fa-regular fa-heart"></i>
                     </button>
 
@@ -97,7 +121,7 @@ function renderSeferler() {
                 </div>
                 
                 <button class="btn-select-seat" 
-                    onclick="openSeatModal(${rId}, ${aId}, ${fId}, '${firmaAd}', ${fiyat}, '${kalkis} - ${varis}')">
+                    onclick="openSeatModal(${rotaPlanId}, ${aracId}, ${firmaId}, '${firmaAd}', ${fiyat}, '${kalkis} - ${varis}')">
                     Koltuk Seç <i class="fa-solid fa-chevron-right"></i>
                 </button>
             </div>
@@ -111,7 +135,6 @@ function renderSeferler() {
 document.addEventListener("DOMContentLoaded", () => {
   const searchBtn = document.getElementById("searchBtn");
   
-  // --- ARAMA BUTONU ---
   if (searchBtn) {
     searchBtn.addEventListener("click", async () => {
       const from = document.getElementById("kalkisInput").value;
@@ -126,17 +149,15 @@ document.addEventListener("DOMContentLoaded", () => {
       searchBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Aranıyor...';
 
       try {
-        const url = `/api/rota-plan/ara?kalkis=${from}&varis=${to}&tarih=${date || ''}`;
+        // Backend url
+        const url = `/api/rota-plan/sefer-ara?kalkis=${from}&varis=${to}&tip=${selectedVehicleType || 'all'}&tarih=${date || ''}`;
         
         const res = await fetch(url);
         if (!res.ok) throw new Error("Arama hatası");
         
-        // Veriyi çekip global değişkene atıyoruz
         allFetchedData = await res.json();
         
         searchBtn.innerHTML = '<i class="fa-solid fa-magnifying-glass"></i> Sefer Bul';
-        
-        // Listeleme fonksiyonunu çağırıyoruz
         renderSeferler();
 
       } catch (err) {
@@ -147,7 +168,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Buton dinleyicileri (Rezerve/Satın Al)
   const reserveBtn = document.getElementById("reserveBtn");
   if (reserveBtn) reserveBtn.addEventListener("click", () => islemYap("Rezerve"));
   const buyBtn = document.getElementById("buyBtn");
@@ -155,14 +175,15 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // --- KOLTUK SEÇİM MODALI ---
-window.openSeatModal = async (rotaId, aracId, firmaId, firmaAd, fiyat, guzergah) => {
+window.openSeatModal = async (rotaPlanId, aracId, firmaId, firmaAd, fiyat, guzergah) => {
   const modal = document.getElementById("seatModal");
   const grid = document.getElementById("seats-grid");
   
   document.getElementById("modal-route-info").innerText = `${firmaAd} | ${guzergah}`;
   document.getElementById("total-price").innerText = "0";
 
-  currentRotaPlan = { rotaId, aracId, firmaId, fiyat };
+  // Global değişkene ata
+  currentRotaPlan = { rotaPlanId, aracId, firmaId, fiyat };
   selectedSeat = null;
 
   grid.innerHTML = '<div class="loading">Koltuklar yükleniyor...</div>';
@@ -170,43 +191,59 @@ window.openSeatModal = async (rotaId, aracId, firmaId, firmaAd, fiyat, guzergah)
   modal.classList.remove("hidden");
 
   try {
-    const koltukRes = await fetch(`/api/koltuklar/arac/${aracId}`);
-    const seats = await koltukRes.json();
-    
-    // Doğru Endpoint: 3 parametreli
-    const dolulukRes = await fetch(`/api/rezervasyonlar/rota-plan/${rotaId}/${aracId}/${firmaId}`);
-    const rezervasyonlar = await dolulukRes.json();
-    
-    const rezerveKoltukIds = rezervasyonlar.filter(r => r.durum === 'Beklemede').map(r => r.koltuk.koltukId);
-    const satilanKoltukIds = rezervasyonlar.filter(r => r.durum === 'Biletlendi').map(r => r.koltuk.koltukId);
+    const koltukRes = await fetch(`/koltuklar/${rotaPlanId}/koltuklar`);
 
-    seats.sort((a, b) => parseInt(a.koltukNo) - parseInt(b.koltukNo));
+    if (!koltukRes.ok) {
+      throw new Error(`Koltuk endpoint hatası: ${koltukRes.status}`);
+    }
+
+    const seats = await koltukRes.json();
+    const dolulukRes = await fetch(`/api/rezervasyonlar/rota-plan/${rotaPlanId}`);
+
+    if (!dolulukRes.ok) {
+      throw new Error(`Rezervasyon endpoint hatası: ${dolulukRes.status}`);
+    }
+
+    const rezervasyonlar = await dolulukRes.json();
+    const rezervasyonListesi = Array.isArray(rezervasyonlar) ? rezervasyonlar : [];
+
+    const rezerveKoltukIds = rezervasyonListesi
+      .filter(r => r && r.durum === 'Beklemede' && r.koltuk && r.koltuk.koltukId)
+      .map(r => r.koltuk.koltukId);
+
+    const satilanKoltukIds = rezervasyonListesi
+      .filter(r => r && r.durum === 'Biletlendi' && r.koltuk && r.koltuk.koltukId)
+      .map(r => r.koltuk.koltukId);
+
+    const seatListesi = Array.isArray(seats) ? seats : [];
+    seatListesi.sort((a, b) => parseInt(a.koltukNo) - parseInt(b.koltukNo));
 
     grid.innerHTML = "";
-    
-    seats.forEach(s => {
-       const div = document.createElement("div");
-       div.innerText = s.koltukNo;
-       
-       if (satilanKoltukIds.includes(s.koltukId)) {
-           div.className = "seat full"; 
-       } else if (rezerveKoltukIds.includes(s.koltukId)) {
-           div.className = "seat reserved"; 
-       } else {
-           div.className = "seat empty"; 
-           div.onclick = () => {
-               document.querySelectorAll(".seat.selected").forEach(x => x.classList.remove("selected"));
-               div.classList.add("selected");
-               selectedSeat = s;
-               document.getElementById("total-price").innerText = fiyat;
-           };
-       }
-       grid.appendChild(div);
+
+    seatListesi.forEach(s => {
+      const div = document.createElement("div");
+      div.innerText = s.koltukNo;
+
+      if (satilanKoltukIds.includes(s.koltukId)) {
+        div.className = "seat full";
+      } else if (rezerveKoltukIds.includes(s.koltukId)) {
+        div.className = "seat reserved";
+      } else {
+        div.className = "seat empty";
+        div.onclick = () => {
+          document.querySelectorAll(".seat.selected").forEach(x => x.classList.remove("selected"));
+          div.classList.add("selected");
+          selectedSeat = s;
+          document.getElementById("total-price").innerText = fiyat;
+        };
+      }
+
+      grid.appendChild(div);
     });
 
   } catch (e) {
     grid.innerHTML = "Koltuk bilgisi alınamadı.";
-    console.error(e);
+    console.error("openSeatModal hata:", e);
   }
 };
 
@@ -214,7 +251,7 @@ window.closeSeatModal = () => {
   document.getElementById("seatModal").classList.remove("active");
 };
 
-// --- İŞLEM YAP (Aynen korundu) ---
+// --- İŞLEM YAP ---
 async function islemYap(tip) {
     if (!selectedSeat) {
         alert("Lütfen bir koltuk seçiniz!");
@@ -228,20 +265,16 @@ async function islemYap(tip) {
         return;
     }
 
-    const payload = {
-        rotaPlan: { 
-            id: {
-                rotaId: currentRotaPlan.rotaId,
-                aracId: currentRotaPlan.aracId,
-                firmaId: currentRotaPlan.firmaId
-            }
-        },
-        koltuk: { koltukId: selectedSeat.koltukId },
-        kullanici: { kullaniciId: user.kullaniciId },
-        fiyat: currentRotaPlan.fiyat,
-        durum: tip === "SatinAl" ? "Biletlendi" : "Beklemede"
-    };
-
+	const payload = {
+	        rotaPlan: { 
+	            rotaPlanId: currentRotaPlan.rotaPlanId 
+	        },
+	        koltuk: { koltukId: selectedSeat.koltukId },
+	        
+	        yolcu: { yolcuId: user.kullaniciId }, 
+	        fiyat: currentRotaPlan.fiyat,
+	        durum: tip === "SatinAl" ? "Biletlendi" : "Beklemede"
+	    };
     if (tip === "SatinAl") {
         if (!confirm(`${currentRotaPlan.fiyat} TL ödeme alınacak. Onaylıyor musunuz?`)) return;
     }
@@ -260,37 +293,17 @@ async function islemYap(tip) {
 
         const rezData = await res.json();
 
-        if (tip === "SatinAl") {
-            await fetch("/api/odemeler", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    rezervasyon: { rezervasyonId: rezData.rezervasyonId },
-                    odemeMetodu: "Kredi Kartı",
-                    odemeDurumu: "Tamamlandı",
-                    fiyat: currentRotaPlan.fiyat
-                })
-            });
+		if (tip === "SatinAl") {
+		    alert("Biletiniz başarıyla oluşturuldu!");
+		    window.location.href = "/ticket";
+		} else {
+		    alert("Rezervasyonunuz başarıyla oluşturuldu.");
+		    window.location.href = "/reservations";
+		}
 
-            await fetch("/api/bilet/satin-al", {
-                 method: "POST",
-                 headers: { "Content-Type": "application/json" },
-                 body: JSON.stringify({
-                     rezervasyon: { rezervasyonId: rezData.rezervasyonId },
-                     biletNo: "PNR-" + Math.floor(100000 + Math.random() * 900000)
-                 })
-            });
-            
-            alert("Biletiniz başarıyla oluşturuldu!");
-            window.location.href = "/ticket"; 
-        } else {
-            alert("Rezervasyonunuz başarıyla oluşturuldu.");
-            window.location.href = "/reservations";
-        }
 
     } catch (e) {
         console.error(e);
         alert("Hata: " + e.message);
     }
 }
-

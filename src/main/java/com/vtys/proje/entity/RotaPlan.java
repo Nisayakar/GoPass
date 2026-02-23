@@ -2,57 +2,42 @@ package com.vtys.proje.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
 @Entity
-@Table(name = "rota_plan")
+@Table(
+    name = "rota_plan",
+    uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"arac_id", "sefer_tarihi", "sefer_saati"})
+    }
+)
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class RotaPlan {
 
-    @EmbeddedId
-    private RotaPlanId id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "rota_plan_id")
+    private Integer rotaPlanId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("rotaId")
-    @JoinColumn(name = "rota_id")
-
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "planlar"}) 
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "rota_id", nullable = false)
     private Rota rota;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("aracId")
-    @JoinColumn(name = "arac_id")
-    
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "seferler", "koltuklar"})
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "arac_id", nullable = false)
     private Arac arac;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("firmaId")
-    @JoinColumn(name = "firma_id")
-
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "seferler"})
-    private Firma firma;
-
-    @Column(name = "sefer_tarihi")
+    @Column(name = "sefer_tarihi", nullable = false)
     private LocalDate seferTarihi;
 
-    @Column(name = "sefer_saati")
+    @Column(name = "sefer_saati", nullable = false)
     private LocalTime seferSaati;
-    
- 
-    @Column(name = "varis_saati")
-    private LocalTime varisSaati;
 
-    @Column(name = "bilet_fiyati")
+    @Column(name = "bilet_fiyati", nullable = false, precision = 10, scale = 2)
     private BigDecimal biletFiyati;
-
-    @Column(name = "tahmini_sure")
-    private String tahminiSure;
 }
