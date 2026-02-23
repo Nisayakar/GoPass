@@ -24,7 +24,6 @@ public class RezervasyonServiceImpl implements RezervasyonService {
 
     @Override
     public Rezervasyon save(Rezervasyon rezervasyon) {
-        // Tüm nesne zincirini kontrol edelim
         if (rezervasyon == null) {
             throw new RuntimeException("Rezervasyon nesnesi null gönderilemez!");
         }
@@ -37,7 +36,6 @@ public class RezervasyonServiceImpl implements RezervasyonService {
             throw new RuntimeException("Rota Planı veya Koltuk bilgisi eksik!");
         }
 
-        // Çifte Rezervasyon Kontrolü
         Optional<Rezervasyon> mevcut = repository.findByRotaPlanIdAndKoltukId(
             rezervasyon.getRotaPlan().getRotaPlanId(),
             rezervasyon.getKoltuk().getKoltukId()
@@ -52,7 +50,6 @@ public class RezervasyonServiceImpl implements RezervasyonService {
             
             String sql = "CALL sp_bilet_satis(?, ?, ?, CAST(? AS NUMERIC))";
             
-            // Parametreleri doğrudan değişkene alıp kontrol edelim
             Integer yolcuId = rezervasyon.getYolcu().getYolcuId();
             Integer rotaPlanId = rezervasyon.getRotaPlan().getRotaPlanId();
             Integer koltukId = rezervasyon.getKoltuk().getKoltukId();
