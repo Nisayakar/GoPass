@@ -21,7 +21,6 @@ public class Rezervasyon {
     @JoinColumn(name = "koltuk_id")
     private Koltuk koltuk;
 
-    // SQL şemanızda Rezervasyon tablosunda yolcu_id var, kullanici_id yok.
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "yolcu_id")
     private Yolcu yolcu;
