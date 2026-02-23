@@ -22,10 +22,10 @@ public class Yolcu {
     @JoinColumn(name = "kullanici_id")
     private Kullanici kullanici;
 
-    @Column(name = "ad", length = 100) // SQL şemanızdaki Ad sütunu
+    @Column(name = "ad", length = 100) 
     private String ad;
 
-    @Column(name = "soyad", length = 100) // SQL şemanızdaki Soyad sütunu
+    @Column(name = "soyad", length = 100) 
     private String soyad;
 
     @Column(name = "yasi")
@@ -34,7 +34,6 @@ public class Yolcu {
     @Column(name = "cinsiyet", length = 10)
     private String cinsiyet;
 
-    // YENİ: Rezervasyon tablosundaki "yolcu" alanına bağlanır
     @OneToMany(mappedBy = "yolcu", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Rezervasyon> rezervasyonlar;
