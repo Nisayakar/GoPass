@@ -22,12 +22,12 @@ public class FavoriController {
     @PostMapping
     public ResponseEntity<?> ekle(@RequestBody Favori f) {
 
-        // ⚠️ 1. KONTROL: Firma bilgisi geliyor mu?
+     
         if (f.getKullanici() == null || f.getRota() == null || f.getFirma() == null) {
             return ResponseEntity.badRequest().body("Eksik favori bilgisi");
         }
 
-        // ⚠️ 2. KONTROL: Repository metodunu yeni ismine göre çağırıyoruz.
+    
         boolean zatenVar = repo.existsByKullanici_KullaniciIdAndRota_RotaIdAndFirma_FirmaId(
                 f.getKullanici().getKullaniciId(),
                 f.getRota().getRotaId(),
