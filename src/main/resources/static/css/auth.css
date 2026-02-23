@@ -1,6 +1,6 @@
-/* ============ GİRİŞ & KAYIT EKRANI ============ */
+
 .auth-wrapper {
-    /* Navbar yüksekliği kadar boşluk bırakalım veya ortalayalım */
+
     min-height: 80vh; 
     display: flex;
     justify-content: center;
@@ -12,7 +12,7 @@
     width: 100%;
     max-width: 420px;
     
-    /* GLASS EFFECT */
+   
     background: rgba(20, 20, 30, 0.75);
     backdrop-filter: blur(20px);
     border: 1px solid rgba(255,255,255,0.1);
@@ -21,7 +21,6 @@
     padding: 40px;
     box-shadow: 0 20px 60px rgba(0,0,0,0.6);
     
-    /* Animasyonlu giriş */
     animation: fadeIn 0.8s ease;
 }
 
@@ -57,12 +56,12 @@
     outline: none;
 }
 
-/* Modal butonlarını ideal boyuta getiren güncel stil */
+
 .auth-btn {
-    padding: 10px 20px; /* Yüksekliği ve genişliği daralttık */
-    font-size: 0.9rem;  /* Yazı boyutunu küçülttük */
+    padding: 10px 20px; 
+    font-size: 0.9rem;  
     font-weight: 600;
-    border-radius: 8px; /* Köşeleri biraz daha keskin ve modern yaptık */
+    border-radius: 8px; 
     cursor: pointer;
     transition: all 0.3s ease;
     border: none;
@@ -70,14 +69,13 @@
     align-items: center;
     justify-content: center;
     gap: 8px;
-    height: 42px; /* Sabit bir yükseklik verdik */
-    width: auto;  /* İçeriğe göre genişlemesini sağladık */
+    height: 42px; 
+    width: auto; 
     min-width: 120px;
 }
 
-/* Butonların yan yana çok yayılmaması için alt kısım düzenlemesi */
 .modal-footer div[style*="display: flex"] {
-    justify-content: center; /* Butonları ortalar */
+    justify-content: center; 
     gap: 10px;
 }
 .auth-btn:hover {
