@@ -10,12 +10,7 @@ import java.util.List;
 
 public interface RotaPlanRepository extends JpaRepository<RotaPlan, Integer> {
 
-    /**
-     * GELİŞMİŞ SEFER ARAMA
-     * - Kalkış / Varış şehir adına göre
-     * - Araç tipine göre (all / otobüs / uçak vs.)
-     * - Tarih opsiyonel
-     */
+ 
     @Query("""
         SELECT rp FROM RotaPlan rp
         JOIN rp.rota r
@@ -36,9 +31,7 @@ public interface RotaPlanRepository extends JpaRepository<RotaPlan, Integer> {
             @Param("tarih") LocalDate tarih
     );
 
-    /**
-     * BASİT ARAMA (Tarih opsiyonel)
-     */
+    
     @Query("""
         SELECT rp FROM RotaPlan rp
         JOIN rp.rota r
@@ -56,9 +49,7 @@ public interface RotaPlanRepository extends JpaRepository<RotaPlan, Integer> {
             @Param("tarih") LocalDate tarih
     );
 
-    /**
-     * SPRING DATA METHOD NAME – STRING -> STRING
-     */
+  
     List<RotaPlan>
     findByRota_KalkisKonum_Sehir_SehirAdiAndRota_VarisKonum_Sehir_SehirAdi(
             String kalkis,
