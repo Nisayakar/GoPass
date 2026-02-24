@@ -79,6 +79,4 @@ Sinem Yaman
 
 Mert Pepele
 
-Academic Purpose
 
-This project was developed as part of a database systems and backend development study to gain practical experience in software architecture and data management.
